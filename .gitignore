@@ -1,0 +1,9 @@
+*.pth
+*.zip
+venv/
+*.pt
+ccpd_green_balanced/
+yolo_dataset/
+Data/
+Data_transf/
+yolov5/
