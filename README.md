@@ -17,8 +17,7 @@
  conditions. In the second stage, the cropped plate region is passed to a specialized recognition model based on the
  PDLPR architecture. This model is responsible for decoding the sequence of alphanumeric characters on the plate,
  effectively treating the task as a sequence prediction problem. The integration of these two components aims to
- deliver a robust and efficient system for plates recognition and reconstruction suitable for deployment in real-world
- scenarios.
+ deliver a robust and efficient system for plates recognition and reconstruction suitable for deployment in real-world scenarios.
 
 
 
