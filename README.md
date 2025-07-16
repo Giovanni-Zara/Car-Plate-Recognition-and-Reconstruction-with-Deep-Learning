@@ -26,7 +26,7 @@
 
 The project was a collaborative effort with my colleague [Filippo Casini](https://github.com/Filippo-hub).
 ----------------------------------------------------------------------------------------------------------
-Computer vision course at Sapienza University of Rome, Artificial Intelligence and Robotics Master 
+Computer vision course, Sapienza University of Rome, Artificial Intelligence and Robotics Master 
 --------------------------------------------------------------------------------------------------------------
 
 
