@@ -10,7 +10,7 @@
  robust solutions in modern urban infrastructure and mobility management.
 
   The objective of this project is to design and implement a deep learning-based system for license plate
- recognition, following the methodology outlined in [1]. The proposed solution is structured as a two-stage pipeline,
+ recognition, following the methodology outlined in [[1]](#1). The proposed solution is structured as a two-stage pipeline,
  leveraging the strengths of different neural network architectures to address the distinct subtasks involved in the
  recognition process. In the first stage, a YOLOv5 model is employed for license plate detection, allowing for
  fast and accurate localization of the plate region within vehicle images, even under challenging environmental
@@ -27,3 +27,10 @@ Computer vision course at Sapienza University of Rome, Artificial Intelligence a
 --------------------------------------------------------------------------------------------------------------
 
 
+
+
+## References
+<a id="1">[1]</a> 
+Tao, L., Hong, S., Lin, Y., Chen, Y., He, P. and Tie, Z. (2024). 
+A Real-Time License Plate Detection and
+Recognition Model in Unconstrained Scenarios. Sensors, 24(9), 2791
