@@ -9,7 +9,7 @@
  learning-based approaches for license plate recognition, emphasizing practical challenges and the impact of
  robust solutions in modern urban infrastructure and mobility management.
 
- Dataset: [[2]](#2)
+ Dataset: [[2]](#2) [link_toDataset_repo](https://github.com/detectRecog/CCPD)
 
   The objective of this project is to design and implement a deep learning-based system for license plate
  recognition, following the methodology outlined in [[1]](#1). The proposed solution is structured as a two-stage pipeline,
