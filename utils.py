@@ -484,7 +484,7 @@ class CarPlateDataset(Dataset):
 
             image = image.crop((left, upper, right, lower))
 
-
+ 
         if self.transform:
             image = self.transform(image)
 
@@ -526,3 +526,110 @@ class CarPlateDataset(Dataset):
     
 
     
+# BOUNDING BOX FUNCTION 
+
+def get_bounding_box(file):
+    numbers=file.split("-")
+    values=numbers[3]
+    values_v2=values.split("&")
+    values_v3=[]
+    for i in range(len(values_v2)):
+        if "_" in values_v2[i]:
+            values_v3.append(values_v2[i].split("_"))
+    t=[values_v2[0],values_v3[0],values_v3[1],values_v3[2],values_v2[-1]]
+    final_values = [int(x) for item in t for x in (item if isinstance(item, list) else [item])]
+    x_coords=[final_values[0],final_values[2],final_values[4],final_values[6]]
+    y_coords=[final_values[1],final_values[3],final_values[5],final_values[7]]
+    x_min = min(x_coords)
+    y_min = min(y_coords)
+    x_max = max(x_coords)
+    y_max = max(y_coords)
+    
+    return [float(x_min), float(y_min), float(x_max), float(y_max)]
+
+# INTERSECTION OVER UNION FUNCTION
+
+def compute_IoU(box1, box2):
+
+    box1=box1.squeeze()
+    box2=box2.squeeze()
+
+    xA = max(box1[0], box2[0])
+    yA = max(box1[1], box2[1])
+    xB = min(box1[2], box2[2])
+    yB = min(box1[3], box2[3])
+
+    area_of_intersection = max(0, xB - xA) * max(0, yB - yA)
+
+    area_box1 = (box1[2] - box1[0]) * (box1[3]- box1[1])
+    area_box2 = (box2[2] - box2[0]) * (box2[3] - box2[1])
+
+    IoU = area_of_intersection / float(area_box1 + area_box2 - area_of_intersection)
+
+    return IoU
+
+# CROP FUNCTION WITH PREDICTED BOUNDING BOX
+
+def crop_image_with_RCNN(file):
+    
+    image = Image.open(file).convert("RGB")
+    transform = T.ToTensor()
+    img_tensor = transform(image).unsqueeze(0).to(device) 
+    with torch.no_grad():
+        prediction = model(img_tensor)[0]
+        best_bb=prediction['boxes'][0].to(device)
+        best_bb=best_bb.int()
+        cropped_image = img_tensor[0, :, best_bb[1]:best_bb[3], best_bb[0]:best_bb[2]]
+    return cropped_image
+
+def crop_folder_with_RCNN(folder_path):
+    cropped_folder = []
+    files = os.listdir(folder_path)
+    for file in files:
+        full_path = os.path.join(folder_path, file)
+        cropped_image = crop_image_with_RCNN(full_path)
+        cropped_folder.append(cropped_image)
+    return cropped_folder
+
+# DATASET   
+
+class CCPD_Dataset(torch.utils.data.Dataset):
+    
+    def __init__(self, path, transforms=None):
+        self.path = path
+        self.transforms = transforms
+        self.folder = os.listdir(path)
+        self.images = [f for f in self.folder if f.endswith(".jpg")]
+
+    def __len__(self):
+        return len(self.images)
+
+    def __getitem__(self, idx):
+        file = self.images[idx]
+        full_path = os.path.join(self.path, file)
+        image = Image.open(full_path).convert("RGB")
+
+        bbox = get_bounding_box(file)
+        tensor_bbox = torch.tensor([bbox], dtype=torch.float32)
+        label = torch.tensor([1], dtype=torch.int64)  
+
+        target = {"boxes": tensor_bbox, "labels": label}
+
+        if target["boxes"].shape[0] != target["labels"].shape[0]:
+            raise ValueError(f"Mismatch in number of boxes and labels for file: {file}")
+
+        if self.transforms:
+            image = self.transforms(image)
+
+        return image, target
+    
+def collate_fn(batch):
+    return tuple(zip(*batch))
+
+# LOADING THE MODEL
+
+def load_Fasterrcnn(device):
+    model = fasterrcnn_resnet50_fpn(num_classes=2)  
+    model.load_state_dict(torch.load('model_weights/best_frcnn_model.pth'))
+    model.to(device)
+    model.eval()
