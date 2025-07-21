@@ -1,3 +1,5 @@
+# THIS FILE IS FOR ANALYSIS ONLY, THAT IS WHY IT DOES NOT FOLLOW THE USUAL LAYOUT (GLOBALS, UTILS, ETC.)
+
 from imports import *
 from global_vars import *
 from utils import *
