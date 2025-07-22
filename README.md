@@ -158,7 +158,7 @@ The CCPD (Chinese City Parking Dataset) contains over 300k images with encoded a
 
 ### Prerequisites
 ```bash
-pip install -r requirements.txt (file present in extra folder)
+pip install -r requirements.txt #(file present in extra folder)
 pip install ultralytics  # for YOLOv5
 pip install wandb       # for experiment tracking
 pip install matplotlib pillow opencv-python
